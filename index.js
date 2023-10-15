@@ -24,16 +24,21 @@ async function run() {
   try {
     // Connect the client to the server
     await client.connect();
+    // coffeeDB Database. coffee collection
     const coffeeCollection = client.db('coffeeDB').collection('coffee');
+    // coffeeDB Database. user collection
+    const userCollection = client.db('coffeeDB').collection('user');
 
-    //     get all Data
+    // -----------------------Coffee related Apis-------------------
+
+    //     get all coffee Data
     app.get('/coffee', async (req, res) => {
       const cursor = coffeeCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
 
-    //     get specific Coffee
+    //     get specific/single Coffee
     app.get('/coffee/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -41,7 +46,7 @@ async function run() {
       res.send(result);
     });
 
-    //  Create Product
+    //  Create Product Coffee
     app.post('/coffee', async (req, res) => {
       const newCoffee = req.body;
       console.log(newCoffee);
@@ -49,7 +54,7 @@ async function run() {
       res.send(result);
     });
 
-    //     put / update
+    //     put / update coffee
     app.put('/coffee/:id', async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
@@ -71,6 +76,7 @@ async function run() {
       res.send(result);
     });
 
+    // Delete Specific Coffee
     app.delete('/coffee/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -78,6 +84,15 @@ async function run() {
       res.send(result);
     });
 
+    // ------------------- Usr related APIs ----------------------------
+
+    // create a single user in mongoDB
+    app.post('/user', async (req, res) => {
+      const user = req.body;
+      console.log(user);
+      const result = await userCollection.insertOne(user);
+      res.send(result);
+    });
     // Send a ping to confirm a successful connection
     await client.db('admin').command({ ping: 1 });
     console.log(
